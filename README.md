@@ -1,1 +1,1 @@
-# studies
+# Exercism 
