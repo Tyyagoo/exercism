@@ -1,12 +1,12 @@
 pub fn append(first first: List(a), second second: List(a)) -> List(a) {
-  foldr(over: first, from: second, with: fn(tl, hd) { [hd, ..tl] })
+  foldr(over: first, from: second, with: prepend)
 }
 
 pub fn concat(lists: List(List(a))) -> List(a) {
-  foldl(over: lists, from: [], with: fn(acc, list) {
+  foldr(over: lists, from: [], with: fn(acc, list) {
     case list {
       [] -> acc
-      _ -> append(first: acc, second: list)
+      _ -> foldr(over: list, from: acc, with: prepend) 
     }
   })
 }
@@ -50,6 +50,7 @@ pub fn foldr(
 }
 
 pub fn reverse(list: List(a)) -> List(a) {
-  foldl(over: list, from: [], with: fn(tl, hd) { [hd, ..tl] })
+  foldl(over: list, from: [], with: prepend)
 }
 
+fn prepend(tl, hd) { [hd, ..tl] }
