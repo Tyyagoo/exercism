@@ -1,23 +1,26 @@
-fun concat ([]: int list list): int list = []
-  | concat (x :: xs) = x @ concat xs
+fun reduce (f: ('b * 'a) -> 'b, acc: 'b, []: 'a list) = acc
+  | reduce (f, acc, (x :: xs)) = reduce (f, (f (acc, x)), xs)
 
-fun reverse ([]: int list): int list = []
-  | reverse (x :: xs) = reverse xs @ [x]
+fun concat (lists: int list list): int list =
+  foldr op@ [] lists
 
-fun filter (f: int -> bool, []: int list): int list = []
-  | filter (f, (x :: xs)) = if f(x) then x :: filter (f, xs) else filter(f, xs)
+fun reverse (list: int list): int list =
+  reduce (fn (xs, x) => x :: xs, [], list)
 
-fun map (f: int -> int, []: int list): int list = []
-  | map (f, (x :: xs)) = f x :: map (f, xs)
+fun filter (f: int -> bool, list: int list): int list =
+  reverse (reduce (fn (xs, x) => if f(x) then x :: xs else xs, [], list))
+
+fun map (f: int -> int, list: int list): int list =
+  reverse (reduce (fn (xs, x) => f x :: xs, [], list))
 
 fun append (list1: int list, list2: int list): int list =
   list1 @ list2
 
-fun length (nil: int list): int = 0
-  | length (_ :: xs) = 1 + (length xs)
+fun length (list: int list): int =
+  reduce (fn (xs, x) => xs + 1, 0, list)
 
-fun foldl (f: int * int -> int, initial: int, []: int list): int = initial
-  | foldl (f, initial, (x :: xs)) = foldl (f, f (initial, x), xs)
+fun foldl (f: int * int -> int, initial: int, list: int list): int =
+  reduce (f, initial, list)
 
 fun foldr (f: int * int -> int, initial: int, []: int list): int = initial
   | foldr (f, initial, (x :: xs)) = f (x, foldr(f, initial, xs))
