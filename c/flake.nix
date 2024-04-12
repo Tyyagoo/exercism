@@ -15,11 +15,13 @@
       runPkg = pkgs: pkg: "${pkgs.${pkg}}/bin/${pkg}";
     in {
       devShells = forAllSystems ({ pkgs }: with pkgs; {
-        default = mkShell {
+        default = mkShell.override { stdenv = clangStdenv; } { 
           name = "c";
-          packages =  [
+          packages = [
             gnumake
-            clang
+            cmake
+            bear
+            clang-tools
           ];
         };
       });
