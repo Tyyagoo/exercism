@@ -1,0 +1,34 @@
+unique type dndCharacter.Character = { strength : Nat
+                                     , dexterity : Nat
+                                     , constitution : Nat
+                                     , intelligence : Nat
+                                     , wisdom : Nat
+                                     , charisma : Nat
+                                     , hitpoints : Nat
+                                     }
+
+dndCharacter.modifier : Nat -> Int
+dndCharacter.modifier score =
+  ((Nat.toInt score) - +10) / +2
+
+dndCharacter.ability_ : '{Random} Nat
+dndCharacter.ability_ =
+  '(Random.natIn 3 19)
+
+dndCharacter.character : '{Random} dndCharacter.Character
+dndCharacter.character = do
+  strength = !ability_
+  dexterity = !ability_
+  constitution = !ability_
+  intelligence = !ability_
+  wisdom = !ability_
+  charisma = !ability_
+  hitpoints = Int.abs (+10 Int.+ (modifier constitution))
+  Character
+    strength
+    dexterity
+    constitution
+    intelligence
+    wisdom
+    charisma
+    hitpoints
