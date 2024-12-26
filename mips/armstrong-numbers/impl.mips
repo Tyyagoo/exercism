@@ -1,0 +1,51 @@
+# | Register | Usage     | Type    | Description                                       |
+# | -------- | --------- | ------- | ------------------------------------------------- |
+# | `$a0`    | input     | address | number                                            |
+# | `$v0`    | output    | boolean | is armstrong number (`0` = `false`, `1` = `true`) |
+# | `$t0-9`  | temporary | any     | used for temporary storage                        |
+
+.globl is_armstrong_number
+
+is_armstrong_number:
+        move $t0, $a0 # number
+        li $t2, 0     # sum
+        li $t4, 0     # len
+        li $t5, 10    # for div/rem
+
+len:
+        beq $t0, $zero, end_len
+        div $t0, $t5            # Lo - quo // Hi - rem
+        mflo $t0                # move quotient back
+        addi $t4, $t4, 1
+        j len
+end_len:
+        move $t0, $a0           # restore to reuse number
+
+sum:
+        beq $t0, $zero, end_sum
+        div $t0, $t5
+        mfhi $t3                # remainder to power
+        mflo $t0                # quotient to next iter
+
+        li $t6, 1               # power
+        move $t8, $t4           # len for power iter
+
+power:
+        beq $t8, $zero, end_power
+        mul $t6, $t6, $t3       # just like the aztecs
+        subi $t8, $t8, 1
+        j power
+end_power:
+        add $t2, $t2, $t6
+        j sum
+
+end_sum:
+        beq $t2, $a0, is_true
+        li $v0, 0
+        j end
+
+is_true:
+        li $v0, 1
+
+end:
+        jr $ra
