@@ -1,0 +1,15 @@
+rotationalCipher.rotate : Text -> Nat -> Text
+rotationalCipher.rotate text shiftKey =
+  Text.map (shiftChar shiftKey) text
+
+rotationalCipher.shiftChar : Nat -> Char -> Char
+rotationalCipher.shiftChar shift c =
+  Optional.getOrBug "👺" (Char.fromNat (
+    if (c >= ?A && c <= ?Z) then
+      (Nat.mod (Char.toNat c - Char.toNat ?A + shift) 26) + Char.toNat ?A
+    else if (c >= ?a && c <= ?z) then
+      (Nat.mod (Char.toNat c - Char.toNat ?a + shift) 26) + Char.toNat ?a
+    else
+      Char.toNat c
+  ))
+  
